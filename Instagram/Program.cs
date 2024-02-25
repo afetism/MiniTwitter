@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 string[] AccessItem= { "Admin", "User" };
 string[] RegisterItem = { "Sign In", "Sign Up" ,"Exit"};
-string[] AdminItem  = { "Publish Post", "Show All Post", "Exit" };
+string[] AdminItem  = { "Publish Post", "Show All Post","Nofitaction","Exit" };
 string[] LikeItem = { "Like", "Exit" };
 
 
@@ -83,6 +83,13 @@ void ManageAminMenu(string[] items,Admin admin)
             break;
         case AdminMenu.ShowAllPost:
             admin.ShowAllAdminPosts();
+            Console.WriteLine("Back to any Key");
+            Console.ReadKey();
+            Console.Clear();
+            goto AdminMenu;
+            break;
+        case AdminMenu.Nofitaction:
+            admin.ShowNotification();
             Console.WriteLine("Back to any Key");
             Console.ReadKey();
             Console.Clear();
@@ -198,7 +205,7 @@ Signin:
             {
                 Console.Clear();
                 Console.WriteLine("Welcome Back");
-                UserPage(adminUser);
+                UserPage(adminUser,user);
 
 
 
@@ -326,7 +333,7 @@ int managMenu2(string[] items,string s)
     }
 }
 
-void UserPage(AdminSytem adminSystem)
+void UserPage(AdminSytem adminSystem,User user)
 {
     string[] AdminUserName = adminSystem.getAdminUserName();
     int choose =managMenu(AdminUserName);
@@ -334,12 +341,12 @@ void UserPage(AdminSytem adminSystem)
     {
          if(i==choose)
          {
-            string[] _=adminSystem.getPostName();
+            string[] _=adminSystem.getPostName(choose);
             int choose1 = managMenu(_);
-            string st= adminSystem.getText(choose1);
+            string st= adminSystem.getText(choose1,choose);
             int likeChoose = managMenu2(LikeItem,st);
             if (likeChoose==0)
-                adminSystem.LikeCount(choose1);
+                adminSystem.LikeCount(choose1,user);
 
         }
 
@@ -378,6 +385,7 @@ enum AdminMenu
 {
     PushPost=0,
     ShowAllPost=1,
+    Nofitaction=2,
     Exit
 
 };

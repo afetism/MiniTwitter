@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Instagram.Users;
 namespace Instagram.Admins
 {
     internal class AdminSytem
     {
        public List<Admin> admin { get; } = new List<Admin>();
+        public Dictionary<int, bool> LikedPosts { get; } = new Dictionary<int, bool>();
 
-       
+
         public Admin SignIn(string email, string password)
         {
             if (string.IsNullOrWhiteSpace(email)&&string.IsNullOrWhiteSpace(password))
@@ -56,14 +57,19 @@ namespace Instagram.Admins
 
         }
 
-        public string[] getPostName() {
+        public string[] getPostName(int choose) {
             StringBuilder sb = new StringBuilder();
             foreach (var user in admin)
             {
-                foreach (var post in user.Posts)
+               if(user.Id-1 == choose) 
+                for (int i = 0; i<user.Posts.Count; i++)
                 {
-                    sb.Append($"{post.Id}: {post.Title}");
-                    sb.Append("\n");
+                    
+
+                    
+                        sb.Append($"{user.Posts[i].Id}: {user.Posts[i].Title}");
+                        sb.Append("\n");
+                    
                 }
             }
             sb.Append("Exit");
@@ -71,11 +77,12 @@ namespace Instagram.Admins
             return sb.ToString().Split("\n");
         }
 
-        public string getText(int choose)
+        public string getText(int choose,int choose1)
         {
             foreach(var user in admin)
             {
-              for (int i = 0;i<user.Posts.Count;i++)
+                if (user.Id-1 == choose1)
+                for (int i = 0;i<user.Posts.Count;i++)
                 {
                     if (user.Posts[i] == user.Posts[choose])
                     {
@@ -93,16 +100,25 @@ namespace Instagram.Admins
         }
 
 
-        public void LikeCount(int choose)
+        public void LikeCount(int choose,User fromUser)
         {
+
             foreach (var user in admin)
             {
                 for (int i = 0; i<user.Posts.Count; i++)
                 {
                     if (user.Posts[i] == user.Posts[choose])
                     {
-                        user.Posts[i].LikeCount++;
-                        return;
+                        if (!(LikedPosts.ContainsKey(i) && LikedPosts[i]))
+                        {
+                            LikedPosts[i]=true;
+                            user.addNotification(fromUser, "Like Post");
+                            user.Posts[i].LikeCount++;
+                            return;
+                        }
+                        else if (LikedPosts.ContainsKey(i) && LikedPosts[i])
+                            return;
+                            
 
                     }
 

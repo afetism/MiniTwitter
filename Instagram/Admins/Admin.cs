@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Instagram.Posts;
+using Instagram.Notifications;
 using System.Globalization;
+using System.Reflection.Metadata;
 namespace Instagram.Admins
 {
     //    Admin=>id,username,email,password,Posts,Notifications
@@ -29,7 +31,7 @@ namespace Instagram.Admins
 
         public List<Post> Posts { get; private set; } = new();
         
-        
+        public List<Notification> Notifications { get; private set; } = new();
         
 
         public void addPost(string content,String Title)
@@ -40,6 +42,20 @@ namespace Instagram.Admins
                 
                 Posts.Add(new Post(content,Title));
             
+        }
+
+        public void addNotification(User fromUser,string text)
+        {
+            if (fromUser is null) throw new ArgumentNullException();
+            if (string.IsNullOrWhiteSpace(text)) throw new ArgumentNullException();
+            Notifications.Add(new Notification(fromUser,text));
+        }
+
+        public void ShowNotification()
+        {
+           foreach(var item in Notifications)
+                Console.WriteLine(item);
+
         }
 
         public void ShowAllAdminPosts()
